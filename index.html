@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cuentas Bancarias — Samuel Velazquez González</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=DM+Sans:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0B1F3A;
+    --navy-mid: #112d52;
+    --gold: #C8972B;
+    --gold-light: #E8B84B;
+    --cream: #F5F0E8;
+    --white: #FFFFFF;
+    --gray: #8A9AB0;
+    --border: rgba(200,151,43,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 10% 20%, rgba(200,151,43,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 80%, rgba(200,151,43,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .header-line {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 24px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  header h1 span {
+    color: var(--gold-light);
+  }
+
+  header p {
+    margin-top: 10px;
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 28px;
+    justify-content: center;
+  }
+
+  .header-divider span {
+    height: 1px;
+    width: 80px;
+    background: var(--border);
+    display: block;
+  }
+
+  .header-divider em {
+    color: var(--gold);
+    font-style: normal;
+    font-size: 1rem;
+  }
+
+  /* CARDS GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.07);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,151,43,0.35);
+  }
+
+  /* Animated card number */
+  .card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    color: rgba(200,151,43,0.06);
+    line-height: 1;
+    pointer-events: none;
+    transition: color 0.25s;
+  }
+
+  .card:hover::before {
+    color: rgba(200,151,43,0.10);
+  }
+
+  /* Accent bar */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    border-radius: 14px 0 0 14px;
+  }
+
+  /* Card stagger animations */
+  .card:nth-child(1)  { animation-delay: 0.05s; }
+  .card:nth-child(2)  { animation-delay: 0.10s; }
+  .card:nth-child(3)  { animation-delay: 0.15s; }
+  .card:nth-child(4)  { animation-delay: 0.20s; }
+  .card:nth-child(5)  { animation-delay: 0.25s; }
+  .card:nth-child(6)  { animation-delay: 0.30s; }
+  .card:nth-child(7)  { animation-delay: 0.35s; }
+  .card:nth-child(8)  { animation-delay: 0.40s; }
+  .card:nth-child(9)  { animation-delay: 0.45s; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .bank-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold), #8C6010);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .bank-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .bank-sub {
+    font-size: 0.72rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .row-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--gray);
+    flex-shrink: 0;
+    font-weight: 400;
+  }
+
+  .row-value {
+    font-size: 0.88rem;
+    color: var(--cream);
+    font-weight: 400;
+    text-align: right;
+    word-break: break-all;
+  }
+
+  .row-value.highlight {
+    color: var(--gold-light);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  /* Section label inside card */
+  .section-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    font-weight: 500;
+    margin: 16px 0 8px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(200,151,43,0.2);
+  }
+
+  /* Copy button */
+  .copy-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 9px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: rgba(200,151,43,0.12);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .copy-btn.copied {
+    background: rgba(200,151,43,0.15);
+    color: var(--gold-light);
+    border-color: var(--gold-light);
+  }
+
+  .copy-btn.ci-btn {
+    color: var(--gray);
+    border-color: rgba(138,154,176,0.25);
+    margin-top: 6px;
+  }
+
+  .copy-btn.ci-btn:hover {
+    background: rgba(138,154,176,0.1);
+    border-color: var(--gray);
+    color: var(--white);
+  }
+
+  .copy-btn.alias-btn {
+    color: #7ec8c8;
+    border-color: rgba(126,200,200,0.25);
+    margin-top: 6px;
+  }
+
+  .copy-btn.alias-btn:hover {
+    background: rgba(126,200,200,0.1);
+    border-color: #7ec8c8;
+    color: #a8e0e0;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    animation: fadeUp 0.6s ease 0.5s both;
+  }
+
+  footer strong {
+    color: var(--gold);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .container { padding: 40px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="header-line"></div>
+<h1>Samuel <span>Velazquez González</span></h1>
+<p>C.I. 7.451.810  ·  Portafolio de Cuentas Bancarias</p>
+<div class="header-divider">
+<span></span><em>✦</em><span></span>
+</div>
+</header>
+<div class="grid">
+<!-- 1. Ueno Bank -->
+<!-- 2. Banco Familiar -->
+<!-- 3. Vaquita -->
+<!-- 4. Banco GNB -->
+<!-- 5. Banco Continental -->
+<!-- 6. Atlas -->
+<!-- 7. eCLUB - Interfisa -->
+<!-- 8. Mango -->
+<!-- 9. BNF -->
+
+
+
+
+
+
+
+
+
+<div class="card" data-num="1">
+<div class="card-header">
+<div class="bank-icon">EK</div>
+<div>
+<div class="bank-name">Ekko</div>
+<div class="bank-sub">Banco Familiar</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">8117217260</span></div>
+<div class="row"><span class="row-label">Alias (CI)</span><span class="row-value">7451810</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '8117217260')">Copiar N° de Cuenta</button>
+<button class="copy-btn alias-btn" onclick="copyCard(this, '7451810')">Copiar Alias</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="2">
+<div class="card-header">
+<div class="bank-icon">AT</div>
+<div>
+<div class="bank-name">Atlas</div>
+<div class="bank-sub">Billetera Digital</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">1635414</span></div>
+<div class="row"><span class="row-label">Alias (Celular)</span><span class="row-value">0971 606 141</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '1635414')">Copiar N° de Cuenta</button>
+<button class="copy-btn alias-btn" onclick="copyCard(this, '0971606141')">Copiar Alias</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="3">
+<div class="card-header">
+<div class="bank-icon">UB</div>
+<div>
+<div class="bank-name">Ueno Bank</div>
+<div class="bank-sub">Cuenta en Guaraníes</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">20947567</span></div>
+<div class="row"><span class="row-label">Alias (Teléfono)</span><span class="row-value">0987381357</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '20947567')">Copiar N° de Cuenta</button>
+<button class="copy-btn alias-btn" onclick="copyCard(this, '0987381357')">Copiar Alias</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="4">
+<div class="card-header">
+<div class="bank-icon">VQ</div>
+<div>
+<div class="bank-name">Vaquita</div>
+<div class="bank-sub">Finlatina S.A. de Finanzas</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">138038</span></div>
+<div class="row"><span class="row-label">Alias Email</span><span class="row-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b5c3d0d9d4cfc4c0d0c6d4d8c0d0d981f5d2d8d4dcd99bd6dad8">[email&#160;protected]</a></span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '138038')">Copiar N° de Cuenta</button>
+<button class="copy-btn alias-btn" onclick="copyCard(this, 'velazquesamuel4@gmail.com')">Copiar Alias</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="5">
+<div class="card-header">
+<div class="bank-icon">GNB</div>
+<div>
+<div class="bank-name">Banco GNB</div>
+<div class="bank-sub">GNB Paraguay S.A.E.C.A.</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">13323470001</span></div>
+<div class="row"><span class="row-label">Alias Email</span><span class="row-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3142505c44545d565e5f4b50470571565c50585d1f525e5c">[email&#160;protected]</a></span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '13323470001')">Copiar N° de Cuenta</button>
+<button class="copy-btn alias-btn" onclick="copyCard(this, 'samuelgonzav4@gmail.com')">Copiar Alias</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="6">
+<div class="card-header">
+<div class="bank-icon">BC</div>
+<div>
+<div class="bank-name">Banco Continental</div>
+<div class="bank-sub">Cuenta Bancaria</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">290080902005</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '290080902005')">Copiar N° de Cuenta</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="7">
+<div class="card-header">
+<div class="bank-icon">eC</div>
+<div>
+<div class="bank-name">eCLUB</div>
+<div class="bank-sub">Interfisa Banco</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">249098165</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '249098165')">Copiar N° de Cuenta</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="8">
+<div class="card-header">
+<div class="bank-icon">MG</div>
+<div>
+<div class="bank-name">Mango</div>
+<div class="bank-sub">Tu Financiera</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">26957354</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '26957354')">Copiar N° de Cuenta</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+<div class="card" data-num="9">
+<div class="card-header">
+<div class="bank-icon">BNF</div>
+<div>
+<div class="bank-name">BNF</div>
+<div class="bank-sub">Banco Nacional de Fomento</div>
+</div>
+</div>
+<div class="rows">
+<div class="row"><span class="row-label">Titular</span><span class="row-value">Samuel Velazquez González</span></div>
+<div class="row"><span class="row-label">CI</span><span class="row-value">7.451.810</span></div>
+<div class="row"><span class="row-label">N° de Cuenta</span><span class="row-value highlight">2000155983663</span></div>
+</div>
+<button class="copy-btn" onclick="copyCard(this, '2000155983663')">Copiar N° de Cuenta</button>
+<button class="copy-btn ci-btn" onclick="copyCard(this, '7451810')">Copiar CI</button>
+</div>
+</div><!-- /grid -->
+<footer>
+<p>Documento generado para <strong>Samuel Velazquez González</strong>  ·  CI 7.451.810</p>
+<p style="margin-top:6px; font-size:0.7rem; opacity:0.5;">Información confidencial · Uso personal</p>
+</footer>
+</div><!-- /container -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function copyCard(btn, value) {
+    const original = btn.textContent;
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value)
+        .then(() => showCopied(btn, original))
+        .catch(() => fallbackCopy(btn, value, original));
+    } else {
+      fallbackCopy(btn, value, original);
+    }
+  }
+
+  function fallbackCopy(btn, value, original) {
+    const el = document.createElement('input');
+    el.value = value;
+    el.setAttribute('readonly', '');
+    el.style.cssText = 'position:fixed;top:0;left:0;width:2em;height:2em;opacity:0;';
+    document.body.appendChild(el);
+    el.focus();
+    el.select();
+    el.setSelectionRange(0, el.value.length);
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(el);
+    if (ok) {
+      sho
